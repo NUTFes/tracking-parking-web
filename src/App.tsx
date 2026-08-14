@@ -1,5 +1,6 @@
 import { Alert, Box, CircularProgress, Container, Stack, Typography } from "@mui/material";
 import { api } from "./api/client";
+import { CampusMap } from "./components/CampusMap";
 import { ParkingLotTile } from "./components/ParkingLotTile";
 import { usePolling } from "./hooks/usePolling";
 
@@ -18,6 +19,8 @@ function App() {
           5秒ごとに自動更新されます
         </Typography>
       </Box>
+
+      <CampusMap parkingLots={parkingLots.data ?? []} />
 
       {parkingLots.error && (
         <Alert severity="error" sx={{ mb: 3 }}>
