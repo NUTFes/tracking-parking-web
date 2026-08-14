@@ -4,6 +4,7 @@ import { Box, IconButton, Paper, Popover, Typography } from "@mui/material";
 import PlaceIcon from "@mui/icons-material/Place";
 import type { ParkingLot } from "../api/types";
 import { CAMPUS_MAP_PINS } from "../campusMapPins";
+import { getOccupancyColor } from "../hooks/useParkingLotAvailability";
 
 type Props = {
   parkingLots: ParkingLot[];
@@ -33,25 +34,31 @@ export function CampusMap({ parkingLots }: Props) {
     >
       <Box component="img" src="/campus-map.png" alt="キャンパスマップ" sx={{ display: "block", width: "100%", height: "auto" }} />
 
-      {CAMPUS_MAP_PINS.map((pin, index) => (
-        <IconButton
-          key={`${pin.name}-${index}`}
-          onClick={(e) => handlePinClick(e, pin.name)}
-          aria-label={pin.name}
-          size="small"
-          sx={{
-            position: "absolute",
-            left: `${pin.xPercent}%`,
-            top: `${pin.yPercent}%`,
-            transform: "translate(-50%, -100%)",
-            color: "error.main",
-            p: 0.25,
-            "&:hover": { color: "error.dark" },
-          }}
-        >
-          <PlaceIcon sx={{ fontSize: { xs: 26, sm: 30 }, filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }} />
-        </IconButton>
-      ))}
+      {CAMPUS_MAP_PINS.map((pin, index) => {
+        const lot = parkingLots.find((l) => l.name === pin.name);
+        // Unregistered pins get a neutral grey — everything else matches the
+        // same success/warning/error thresholds as the card's gauge.
+        const color = lot ? `${getOccupancyColor(lot)}.main` : "grey.500";
+        return (
+          <IconButton
+            key={`${pin.name}-${index}`}
+            onClick={(e) => handlePinClick(e, pin.name)}
+            aria-label={pin.name}
+            size="small"
+            sx={{
+              position: "absolute",
+              left: `${pin.xPercent}%`,
+              top: `${pin.yPercent}%`,
+              transform: "translate(-50%, -100%)",
+              color,
+              p: 0.25,
+              "&:hover": { filter: "brightness(0.85)" },
+            }}
+          >
+            <PlaceIcon sx={{ fontSize: { xs: 26, sm: 30 }, filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.6))" }} />
+          </IconButton>
+        );
+      })}
 
       <Popover
         open={anchor !== null}
