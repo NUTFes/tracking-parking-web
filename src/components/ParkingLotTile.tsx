@@ -19,7 +19,7 @@ export function ParkingLotTile({ lot }: Props) {
         {hasCapacity ? (
           <>
             <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.75, mt: 1.5, flexWrap: "wrap" }}>
-              <Typography variant="h3" color={`${color}.main`} sx={{ fontWeight: 700 }}>
+              <Typography variant="h3" color={color} sx={{ fontWeight: 700 }}>
                 {lot.current_count}
               </Typography>
               <Typography variant="h5" color="text.secondary" sx={{ fontWeight: 600 }}>
